@@ -1,70 +1,88 @@
 # Quantitative Portfolio Risk & Optimisation Analysis
 
-## Overview
+This project evaluates whether quantitative portfolio optimisation improves the risk-adjusted performance of a manually constructed multi-asset portfolio. It compares the portfolio with the S&P 500, explores 10,000 long-only allocations and tests optimised weights on unseen data.
 
-This project analyses the historical risk and performance of a multi-asset portfolio using Python. It compares a manually constructed portfolio with the S&P 500 and investigates whether quantitative portfolio optimisation can improve risk-adjusted performance.
+## Key findings
 
-The analysis uses historical market data from 2016–2026 and includes portfolio performance metrics, correlation and covariance analysis, Monte Carlo portfolio simulation, and an out-of-sample test of optimised allocations.
+### Full historical period (2016–2026)
+
+| Strategy | CAGR | Annualised volatility | Sharpe ratio | Maximum drawdown |
+|---|---:|---:|---:|---:|
+| Manual portfolio | 15.4% | 13.3% | 0.98 | -23.3% |
+| SPY | 15.2% | 17.8% | 0.76 | -33.7% |
+
+The manual portfolio produced a similar return to SPY with lower volatility and a smaller drawdown. The full-period maximum-Sharpe allocation achieved a Sharpe ratio of 1.25, but this is an in-sample result and is therefore vulnerable to overfitting.
+
+### Out-of-sample period (2022–2026)
+
+| Strategy | CAGR | Sharpe ratio |
+|---|---:|---:|
+| Manual portfolio | 13.3% | 0.73 |
+| SPY | 12.3% | 0.53 |
+| Training-period maximum Sharpe | 11.8% | 0.75 |
+| Training-period minimum volatility | 8.0% | 0.47 |
+
+The training-period maximum-Sharpe portfolio retained a marginally higher Sharpe ratio out of sample, but the manual portfolio achieved the highest return. The result illustrates both the value of diversification and the sensitivity of optimised weights to the estimation period.
+
+![Out-of-sample cumulative portfolio performance](figures/out_of_sample_performance.png)
 
 ## Portfolio
 
-The manually selected portfolio consists of:
+The manual portfolio contains seven assets:
 
-- SPY — S&P 500 ETF
-- MSFT — Microsoft
-- JPM — JPMorgan Chase
-- CAT — Caterpillar
-- VWO — Vanguard FTSE Emerging Markets ETF
-- GLD — SPDR Gold Shares
-- IEF — iShares 7–10 Year Treasury Bond ETF
+| Asset | Exposure | Weight |
+|---|---|---:|
+| SPY | S&P 500 ETF | 30.0% |
+| MSFT | Microsoft | 12.5% |
+| JPM | JPMorgan Chase | 10.0% |
+| CAT | Caterpillar | 7.5% |
+| VWO | Vanguard FTSE Emerging Markets ETF | 10.0% |
+| GLD | SPDR Gold Shares | 10.0% |
+| IEF | iShares 7–10 Year Treasury Bond ETF | 20.0% |
 
-The initial weights were selected before analysing historical portfolio performance.
+The weights were selected before examining historical portfolio performance.
 
 ## Methodology
 
-The analysis includes:
+- Download adjusted daily prices using `yfinance`.
+- Calculate CAGR, annualised volatility, maximum drawdown and Sharpe ratios.
+- Use the three-month US Treasury bill yield from FRED as the risk-free rate.
+- Analyse asset correlations and covariances.
+- Generate 10,000 random long-only portfolios and identify the maximum-Sharpe and minimum-volatility allocations.
+- Estimate optimised weights using 2016–2021 data and evaluate them over 2022–2026.
 
-- Historical adjusted market prices sourced using `yfinance`
-- Daily asset and portfolio returns
-- Compound annual growth rate (CAGR)
-- Annualised volatility
-- Sharpe ratio using historical US Treasury bill rates from FRED
-- Maximum drawdown
-- Asset correlation and covariance analysis
-- Comparison against SPY as a passive benchmark
-- Monte Carlo simulation of 10,000 long-only portfolio allocations
-- Identification of maximum-Sharpe and minimum-volatility portfolios
-- Out-of-sample testing using a 2016–2021 training period and 2022–2026 test period
+![Simulated portfolio risk-return opportunity set](figures/risk_return_opportunity_set.png)
 
-## Key Findings
+## Repository structure
 
-Over the full historical period, the manually constructed portfolio achieved a CAGR of approximately 15.4%, compared with 15.2% for SPY, while exhibiting lower volatility and maximum drawdown.
+```text
+portfolio-risk-optimisation/
+├── figures/                    # Charts exported by the notebook
+├── portfolio_analysis.ipynb    # Complete analysis and interpretation
+├── requirements.txt            # Python dependencies
+└── README.md
+```
 
-The full-period maximum-Sharpe portfolio achieved stronger in-sample risk-adjusted performance, although this result is affected by using the same historical data for portfolio selection and evaluation.
+## Running the project
 
-To provide a more realistic test, portfolio weights were subsequently selected using only 2016–2021 data and evaluated over the unseen 2022–2026 period. The training-period maximum-Sharpe portfolio achieved an out-of-sample Sharpe ratio of approximately 0.75, compared with 0.73 for the manual portfolio and 0.53 for SPY. The manual portfolio nevertheless achieved the highest out-of-sample CAGR of approximately 13.3%.
+```bash
+git clone https://github.com/ata-tuna/portfolio-risk-optimisation.git
+cd portfolio-risk-optimisation
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+jupyter notebook portfolio_analysis.ipynb
+```
 
-These results highlight both the potential diversification benefits of portfolio construction and the limitations of relying on historical optimisation.
+Running the notebook downloads current source data, reproduces the analysis and updates the charts in `figures/`.
 
-## Technologies
+## Data sources
 
-- Python
-- pandas
-- NumPy
-- Matplotlib
-- yfinance
-- Jupyter Notebook
-- Federal Reserve Economic Data (FRED)
+- Market prices: [Yahoo Finance](https://finance.yahoo.com/) through `yfinance`
+- Risk-free rate: [FRED three-month Treasury bill secondary-market rate (DTB3)](https://fred.stlouisfed.org/series/DTB3)
 
 ## Limitations
 
-The analysis relies on historical returns and covariance estimates, which may not represent future market conditions. Transaction costs, taxes and other implementation costs are excluded. The simulated portfolios are long-only and restricted to the selected asset universe.
+The analysis uses historical returns and covariance estimates, which may not represent future market conditions. It excludes transaction costs, taxes and implementation constraints. The simulated portfolios are long-only and restricted to seven assets. A single train/test split reduces in-sample bias but does not establish that an allocation will generalise across other market regimes.
 
-The full-period optimisation is evaluated in-sample and is therefore susceptible to overfitting. The train/test analysis reduces this issue but does not eliminate it, as a single out-of-sample period cannot establish that a strategy will generalise across future market environments.
-
-## Running the Project
-
-Install the required Python packages:
-
-```bash
-pip install pandas numpy matplotlib yfinance jupyter
+This project is for educational purposes and does not constitute investment advice.
