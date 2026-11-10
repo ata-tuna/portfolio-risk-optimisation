@@ -48,6 +48,8 @@ The two simulated allocations below were selected and evaluated on the full peri
 
 The manual portfolio had a similar CAGR to SPY with lower volatility and a smaller drawdown. The maximum-Sharpe result benefits from selecting weights using the same observations on which performance is measured.
 
+![Simulated portfolio risk-return opportunity set](figures/risk_return_opportunity_set.png)
+
 ### Test period: January 2022–August 2026
 
 The simulated allocations here were selected using the training period only, then applied without re-estimating weights during the test period.
@@ -60,6 +62,8 @@ The simulated allocations here were selected using the training period only, the
 | Training minimum volatility | 7.98% | 8.88% | 0.47 | −18.76% |
 
 The training maximum-Sharpe allocation put 39.35% in IEF and 20.38% in GLD. It achieved lower test-period volatility and drawdown than the manual allocation, alongside lower returns. Its small Sharpe advantage is descriptive; the notebook does not test statistical significance. The manual allocation had the highest test-period CAGR of the four portfolios.
+
+![Out-of-sample cumulative portfolio performance](figures/out_of_sample_performance.png)
 
 ## Limitations and calculation notes
 
@@ -82,7 +86,3 @@ jupyter notebook portfolio_analysis.ipynb
 ```
 
 On Windows, activate the environment with `.venv\Scripts\activate` instead. Run the notebook cells in order from a fresh kernel. The notebook contains the calculations and saved tables, and exports its charts to `figures/`.
-
-![Out-of-sample cumulative portfolio performance](figures/out_of_sample_performance.png)
-
-![Simulated portfolio risk-return opportunity set](figures/risk_return_opportunity_set.png)
