@@ -68,8 +68,7 @@ The training maximum-Sharpe allocation put 39.35% in IEF and 20.38% in GLD. It a
 - The random search is approximate and does not sample the weight simplex uniformly. It explores only these seven assets, with no short positions or leverage.
 - Daily rebalancing excludes transaction costs, bid–ask spreads and taxes. SPY is an equity benchmark for a portfolio that also holds bonds and gold, so their risk exposures differ.
 - DTB3 is a discount yield, which the notebook treats as an effective annual rate for daily conversion. Missing rates are forward-filled before date alignment; remaining unmatched return dates are omitted from the excess-return mean, while volatility uses the return series.
-- An earlier notebook calculation divides elapsed days by **362.25**, whereas the later comparison function uses **365.25**. This explains the earlier manual/SPY CAGR figures of 15.30%/15.09%; the tables above consistently use the later function. The notebook is unchanged.
-- Data is downloaded live and package versions are not pinned, so rerunning may produce different results or require adjustments if source formats change.
+- Data is downloaded live, so rerunning may produce different results or require adjustments if source formats change. Package versions are pinned in `requirements.txt`.
 
 ## Run
 
@@ -78,8 +77,12 @@ Use Python 3 with access to Yahoo Finance and FRED. From the repository director
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install pandas numpy matplotlib yfinance jupyter
+python -m pip install -r requirements.txt
 jupyter notebook portfolio_analysis.ipynb
 ```
 
-On Windows, activate the environment with `.venv\Scripts\activate` instead. Run the notebook cells in order from a fresh kernel. The notebook contains the calculations, saved tables, correlation heatmap, simulated opportunity set and test-period cumulative performance chart.
+On Windows, activate the environment with `.venv\Scripts\activate` instead. Run the notebook cells in order from a fresh kernel. The notebook contains the calculations and saved tables, and exports its charts to `figures/`.
+
+![Out-of-sample cumulative portfolio performance](figures/out_of_sample_performance.png)
+
+![Simulated portfolio risk-return opportunity set](figures/risk_return_opportunity_set.png)
